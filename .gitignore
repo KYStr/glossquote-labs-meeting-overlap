@@ -1,0 +1,5 @@
+node_modules/
+dist/
+dist-production/
+dist-production.manifest.json
+*.log

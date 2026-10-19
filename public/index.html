@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'">
+  <title>會議空檔交集｜找出全員可用的會議時段</title>
+  <meta name="description" content="輸入同一天、同一時間基準下每位參與者的空檔與會議長度，計算所有人都能參加的連續時段。資料只在目前頁面記憶體處理，不連接行事曆、不轉換時區。">
+  <link rel="stylesheet" href="/styles/app.css">
+  <script type="module" src="/js/app.mjs"></script>
+</head>
+<body>
+  <a class="skip" href="#workspace">前往工作表</a>
+  <header class="topbar">
+    <a href="https://glossquote.com/index.html">Gloss Tools by GlossQuote</a>
+    <nav aria-label="語言"><span aria-current="page">繁中</span><a id="language-link" href="/en/index.html" lang="en">English</a></nav>
+  </header>
+  <main id="workspace">
+    <div class="intro">
+      <h1>找出所有人都能參加的會議時段</h1>
+      <p>手動輸入每位參與者同一天的空檔，查看全員共同可用且足以容納會議的窗口。所有時間必須已使用相同時區或地點基準；本工具不做轉換。</p>
+      <p class="quiet">資料只在目前頁面記憶體處理。本版不保存輸入；初次載入仍需下載網站檔案。兩種語言為獨立頁面，切換或離開會清除草稿。</p>
+    </div>
+    <noscript><p class="notice">請啟用 JavaScript，才能在此頁面計算共同時段。輸入控制保持停用，資料不會提交。</p></noscript>
+    <p id="initialization" class="notice">正在準備本機工作表；輸入暫時停用。</p>
+    <fieldset id="workspace-controls" disabled>
+      <legend class="workspace-legend">會議工作表</legend>
+      <section class="settings" aria-labelledby="settings-heading">
+        <h2 id="settings-heading">同一天，共同時間基準</h2>
+        <div class="settings-grid">
+          <div class="field">
+            <label for="date">日期</label>
+            <input id="date" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" maxlength="256" aria-describedby="date-help date-error">
+            <p id="date-help" class="help">格式 yyyy-mm-dd，例如 2028-02-29。</p><p id="date-error" class="field-error" hidden></p>
+          </div>
+          <div class="field basis-field">
+            <label for="time-basis">共同時區／地點</label>
+            <input id="time-basis" type="text" autocomplete="off" spellcheck="false" maxlength="256" aria-describedby="basis-help time-basis-error">
+            <p id="basis-help" class="help">所有時段須已使用同一時間基準；工具不轉換時區或夏令時間。最多 60 個字元。</p><p id="time-basis-error" class="field-error" hidden></p>
+          </div>
+          <div class="field">
+            <label for="duration">會議長度（分鐘）</label>
+            <input id="duration" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" maxlength="256" value="60" aria-describedby="duration-help duration-error">
+            <p id="duration-help" class="help">整數 1–1440；可用前導零。</p><p id="duration-error" class="field-error" hidden></p>
+          </div>
+        </div>
+      </section>
+      <section class="worksheet" aria-labelledby="participants-heading">
+        <div class="section-heading"><h2 id="participants-heading">參與者與空檔</h2><p id="row-count" class="help"></p></div>
+        <p id="interval-help" class="help">每人 1–12 段，共 2–20 人。時間用 HH:MM；24:00 只可填在結束。開始須早於結束，不跨日。</p>
+        <div id="participants"></div>
+        <button id="add-participant" type="button">新增參與者</button>
+      </section>
+      <div class="actionbar"><button id="calculate" type="button" class="primary">找出共同時段</button><button id="clear" type="button">清除全部</button></div>
+    </fieldset>
+    <section id="confirmation" class="confirmation" aria-labelledby="confirmation-title" hidden>
+      <h2 id="confirmation-title"></h2><p id="confirmation-description"></p>
+      <div class="actionbar"><button id="confirmation-accept" type="button"></button><button id="confirmation-cancel" type="button">取消</button></div>
+    </section>
+    <section class="results" aria-labelledby="results-heading">
+      <h2 id="results-heading">共同時段</h2>
+      <p id="status" role="status" aria-live="polite" aria-atomic="true">填寫所有欄位，再找出共同時段。</p>
+      <div id="result" hidden></div>
+      <button id="report-toggle" type="button" aria-expanded="false" aria-controls="report-region" hidden>展開文字報告</button>
+      <div id="report-region" hidden><label for="report">純文字報告（唯讀）</label><textarea id="report" readonly autocomplete="off" spellcheck="false" rows="12"></textarea><p class="help">可選取並閱讀文字。本工具不提供複製、下載、列印或分享動作。</p></div>
+    </section>
+    <section class="help-section" aria-labelledby="reading-heading">
+      <h2 id="reading-heading">如何閱讀窗口</h2>
+      <p>每個窗口包含開始、不包含結束。可開始範圍的兩端皆可選，粒度為整分鐘；最晚開始後，仍須在窗口結束前完成整場會議。24:00 表示所選日期的結尾。</p>
+      <h2>常見問題</h2>
+      <details><summary>這個工具會讀我的行事曆或傳送邀請嗎？</summary><p>不會。請手動輸入每位參與者的空檔；工具只在目前頁面記憶體計算交集，不讀行事曆，也不會傳送邀請。</p></details>
+      <details><summary>不同時區的時間可以直接一起計算嗎？</summary><p>不可以。請先確認所有輸入都使用相同的時間基準；工具不轉換時區或夏令時間。</p></details>
+      <details><summary>可用時段重疊或相接時怎麼算？</summary><p>同一人的重疊或相接區間會先合併，再與每位其他參與者求交集；不足會議長度的窗口不會列出。</p></details>
+      <details><summary>結束時間可以填 24:00 嗎？</summary><p>可以，但僅可作同日區間的結束；開始時間不能是 24:00，時段也不能跨午夜。</p></details>
+      <details><summary>離開頁面後會保留我的輸入嗎？</summary><p>不會。草稿只在目前頁面記憶體；切換語言或離頁會清除，回到頁面會從空白狀態開始。</p></details>
+    </section>
+  </main>
+  <footer><a href="https://glossquote.com/index.html">返回 Gloss Tools 首頁</a><span>會議空檔交集</span></footer>
+</body>
+</html>

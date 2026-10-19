@@ -1,0 +1,18 @@
+{
+  "name": "glossquote-meeting-overlap",
+  "compatibility_date": "2026-10-19",
+  "assets": {
+    "directory": "./dist-production",
+    "not_found_handling": "404-page",
+    "html_handling": "none"
+  },
+  "routes": [{ "pattern": "meet.glossquote.com", "custom_domain": true }],
+  "workers_dev": false,
+  "preview_urls": false,
+  "send_metrics": false,
+  "observability": {
+    "enabled": false,
+    "logs": { "enabled": false },
+    "traces": { "enabled": false }
+  }
+}

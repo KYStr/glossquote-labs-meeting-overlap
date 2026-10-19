@@ -1,0 +1,37 @@
+[
+  {
+    "path": "en/index.html",
+    "bytes": 7126,
+    "sha256": "38e505ea82f3730cd7b81b6df117caa5e166a1713c0c8211b4975395a002f23f"
+  },
+  {
+    "path": "index.html",
+    "bytes": 6927,
+    "sha256": "828f1c0819fefbd87da05206d2b5aaca1c926d899995958d928f0c99f5a0db9b"
+  },
+  {
+    "path": "js/app.mjs",
+    "bytes": 13429,
+    "sha256": "c978e8b2a0b1c5829b57da209b034b4a657f65ecb4b98c6572207b4aa4f509bf"
+  },
+  {
+    "path": "js/copy.mjs",
+    "bytes": 8671,
+    "sha256": "e528cde93d45d4105fe2957b13419b3610d284fe4d0af82a13916e68da88bba2"
+  },
+  {
+    "path": "js/core/meeting-overlap.mjs",
+    "bytes": 12808,
+    "sha256": "c6f117b9c249a413c29d73351165124425bb52c46260663305244ce55abd86b4"
+  },
+  {
+    "path": "js/state.mjs",
+    "bytes": 4246,
+    "sha256": "55e399070c5fd6d266cdb65f79632dff31cb5c4dd5b555fe0e64eb59011ce37d"
+  },
+  {
+    "path": "styles/app.css",
+    "bytes": 7578,
+    "sha256": "d3770f36301e267a71afd72102c3909aefdfa0c2d508d1f3d8f1d57cfe887187"
+  }
+]

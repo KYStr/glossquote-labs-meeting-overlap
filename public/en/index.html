@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'">
+  <title>Meeting overlap | Find a time everyone can attend</title>
+  <meta name="description" content="Enter each person's availability for one day and one shared time basis to find continuous windows that fit your meeting. This page calculates locally in memory; it does not read calendars or convert time zones.">
+  <link rel="stylesheet" href="/styles/app.css">
+  <script type="module" src="/js/app.mjs"></script>
+</head>
+<body>
+  <a class="skip" href="#workspace">Skip to worksheet</a>
+  <header class="topbar">
+    <a href="https://glossquote.com/en/index.html">Gloss Tools by GlossQuote</a>
+    <nav aria-label="Language"><a id="language-link" href="/index.html" lang="zh-Hant">繁中</a><span aria-current="page">English</span></nav>
+  </header>
+  <main id="workspace">
+    <div class="intro">
+      <h1>Find a meeting time everyone can attend</h1>
+      <p>Enter each person's availability for the same day. See the continuous windows everyone can attend for the full meeting length. All times must already use the same time zone or place reference; this tool does not convert them.</p>
+      <p class="quiet">Inputs are processed in this page's memory and are not saved. The initial load still downloads website files. The two languages are separate pages; switching or leaving clears your draft.</p>
+    </div>
+    <noscript><p class="notice">Enable JavaScript to calculate common times in this page. Input controls stay disabled and no data is submitted.</p></noscript>
+    <p id="initialization" class="notice">Preparing the local worksheet; inputs are temporarily disabled.</p>
+    <fieldset id="workspace-controls" disabled>
+      <legend class="workspace-legend">Meeting worksheet</legend>
+      <section class="settings" aria-labelledby="settings-heading">
+        <h2 id="settings-heading">One day, one shared time basis</h2>
+        <div class="settings-grid">
+          <div class="field">
+            <label for="date">Date</label>
+            <input id="date" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" maxlength="256" aria-describedby="date-help date-error">
+            <p id="date-help" class="help">Use yyyy-mm-dd, for example 2028-02-29.</p><p id="date-error" class="field-error" hidden></p>
+          </div>
+          <div class="field basis-field">
+            <label for="time-basis">Shared time zone / place</label>
+            <input id="time-basis" type="text" autocomplete="off" spellcheck="false" maxlength="256" aria-describedby="basis-help time-basis-error">
+            <p id="basis-help" class="help">All times must already share one time basis. This tool does not convert time zones or daylight saving time. Up to 60 characters.</p><p id="time-basis-error" class="field-error" hidden></p>
+          </div>
+          <div class="field">
+            <label for="duration">Meeting length (minutes)</label>
+            <input id="duration" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" maxlength="256" value="60" aria-describedby="duration-help duration-error">
+            <p id="duration-help" class="help">An integer from 1–1440; leading zeros are allowed.</p><p id="duration-error" class="field-error" hidden></p>
+          </div>
+        </div>
+      </section>
+      <section class="worksheet" aria-labelledby="participants-heading">
+        <div class="section-heading"><h2 id="participants-heading">Participants and availability</h2><p id="row-count" class="help"></p></div>
+        <p id="interval-help" class="help">2–20 people, with 1–12 intervals each. Use HH:MM; 24:00 is an end time only. Start must be before end, within the same day.</p>
+        <div id="participants"></div>
+        <button id="add-participant" type="button">Add participant</button>
+      </section>
+      <div class="actionbar"><button id="calculate" type="button" class="primary">Find common times</button><button id="clear" type="button">Clear all</button></div>
+    </fieldset>
+    <section id="confirmation" class="confirmation" aria-labelledby="confirmation-title" hidden>
+      <h2 id="confirmation-title"></h2><p id="confirmation-description"></p>
+      <div class="actionbar"><button id="confirmation-accept" type="button"></button><button id="confirmation-cancel" type="button">Cancel</button></div>
+    </section>
+    <section class="results" aria-labelledby="results-heading">
+      <h2 id="results-heading">Common times</h2>
+      <p id="status" role="status" aria-live="polite" aria-atomic="true">Fill in every field, then find common times.</p>
+      <div id="result" hidden></div>
+      <button id="report-toggle" type="button" aria-expanded="false" aria-controls="report-region" hidden>Show text report</button>
+      <div id="report-region" hidden><label for="report">Plain text report (read-only)</label><textarea id="report" readonly autocomplete="off" spellcheck="false" rows="12"></textarea><p class="help">Select and read the text. This tool has no copy, download, print, or share action.</p></div>
+    </section>
+    <section class="help-section" aria-labelledby="reading-heading">
+      <h2 id="reading-heading">Reading a window</h2>
+      <p>A window includes its start and excludes its end. Both ends of the start range are valid, in whole minutes. Even the latest start leaves enough time to finish the meeting. 24:00 means the end of the selected day.</p>
+      <h2>Common questions</h2>
+      <details><summary>Does this tool read calendars or send invitations?</summary><p>No. Enter each person's availability yourself. The calculation runs in this page's memory; it does not read calendars or send invitations.</p></details>
+      <details><summary>Can I combine times from different time zones?</summary><p>No. Convert them yourself first so every entry uses the same time basis. This tool does not convert time zones or daylight saving time.</p></details>
+      <details><summary>What happens when one person's intervals overlap or touch?</summary><p>They are merged before the tool intersects that person's availability with every other participant's. Windows shorter than the meeting are omitted.</p></details>
+      <details><summary>Can an interval end at 24:00?</summary><p>Yes, as the end of a same-day interval only. A start cannot be 24:00, and intervals cannot cross midnight.</p></details>
+      <details><summary>Will my draft remain if I leave this page?</summary><p>No. The draft stays in the current page's memory and is cleared when you leave or switch languages. Returning starts with a blank workspace.</p></details>
+    </section>
+  </main>
+  <footer><a href="https://glossquote.com/en/index.html">Back to Gloss Tools</a><span>Meeting overlap</span></footer>
+</body>
+</html>
